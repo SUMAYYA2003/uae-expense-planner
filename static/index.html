@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DirhamPulse | UAE Expat Multi-Month Financial Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN for graphical representation -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-gradient-to-br from-emerald-900 via-slate-900 to-emerald-950 min-h-screen text-slate-100 flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="w-full py-6 px-8 border-b border-emerald-800/40 backdrop-blur-md bg-emerald-950/30 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-500 text-slate-950 font-bold p-2.5 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white">DirhamPulse <span class="text-emerald-400 text-xs uppercase px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full ml-2">Secure Vault</span></h1>
+                <p class="text-xs text-emerald-300/70">Multi-Month Expat Assessment Tracker</p>
+            </div>
+        </div>
+        <div id="userSessionBox" class="hidden items-center space-x-4">
+            <span id="loggedInEmailLabel" class="text-xs text-emerald-400 font-medium bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl"></span>
+            <button onclick="logout()" class="text-xs bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 px-3 py-1.5 rounded-xl transition font-semibold">🔒 Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto p-6 my-8 flex-grow">
+        
+        <!-- VIEW 1: LOGIN PAGE -->
+        <div id="loginView" class="max-w-md mx-auto bg-slate-900/90 border border-emerald-500/30 p-8 rounded-3xl shadow-2xl backdrop-blur-xl mt-12 text-center">
+            <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/20 text-2xl font-bold">
+                🔑
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">Access Your Private Vault</h2>
+            <p class="text-slate-400 text-xs mb-6">Enter your email to instantly load or create your encrypted monthly financial records.</p>
+            
+            <form id="loginForm" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Your Email Identifier</label>
+                    <input type="email" id="loginEmail" required placeholder="you@example.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 transition-all">
+                    Open Secure Vault 🚀
+                </button>
+            </form>
+        </div>
+
+        <!-- VIEW 2: DASHBOARD PAGE -->
+        <div id="dashboardView" class="hidden space-y-8">
+            
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-emerald-800/40 to-slate-900/80 border border-emerald-500/20 p-8 rounded-3xl shadow-2xl backdrop-blur-xl relative overflow-hidden flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Monthly Financial Assessment</h2>
+                    <p class="text-slate-300 text-xs">Track, analyze, and review your savings state month by month.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-emerald-400 mb-1">Select Month</label>
+                    <select id="selectedMonth" class="bg-slate-950 border border-emerald-500/40 rounded-xl px-4 py-2 text-sm text-white focus:outline-none">
+                        <option value="October 2026">October 2026</option>
+                        <option value="November 2026">November 2026</option>
+                        <option value="December 2026">December 2026</option>
+                        <option value="January 2027">January 2027</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Calculator & Overview Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Input Form -->
+                <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl shadow-xl">
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Enter Month's Details
+                    </h3>
+                    <form id="expenseForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Monthly Salary (AED)</label>
+                                <input type="number" id="salary" required placeholder="6000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Rent / Bed Space (AED)</label>
+                                <input type="number" id="rent" required placeholder="1200" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Food / Groceries (AED)</label>
+                                <input type="number" id="food" required placeholder="800" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Transport / Tabby (AED)</label>
+                                <input type="number" id="transport" required placeholder="400" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/25 transition mt-2">
+                            Save Monthly State 💾
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Live Results & Assessment -->
+                <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Assessment State
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-slate-950 border border-slate-800/80 p-3.5 rounded-2xl flex justify-between items-center">
+                                <span class="text-xs text-slate-400">Total Outgoing:</span>
+                                <span id="totalExpense" class="text-base font-bold text-rose-400">AED 0</span>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800/80 p-3.5 rounded-2xl flex justify-between items-center">
+                                <span class="text-xs text-slate-400">Monthly Savings:</span>
+                                <span id="totalSavings" class="text-base font-bold text-emerald-400">AED 0</span>
+                            </div>
+                            <div id="alertBox" class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs leading-relaxed">
+                                💡 Select a month and submit your numbers to record your assessment state.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Graphical Chart Section -->
+            <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Graphical Financial Trend
+                </h3>
+                <div class="w-full h-64 bg-slate-950/60 p-4 rounded-2xl border border-slate-800 flex items-center justify-center">
+                    <canvas id="financialChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Historical Monthly Records Section -->
+            <div class="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl shadow-xl">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Your Historical Monthly Database
+                </h3>
+                <div id="historyList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <p class="text-xs text-slate-500 italic">No records loaded yet. Submit data above to populate your database.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-slate-500 border-t border-slate-900">
+        DirhamPulse Expat Planner &copy; 2026 | Multi-Month Vault Edition
+    </footer>
+
+    <script>
+        let currentUserEmail = "";
+        let userRecords = {};
+        let myChart = null;
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            currentUserEmail = document.getElementById('loginEmail').value;
+            
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dashboardView').classList.remove('hidden');
+            document.getElementById('userSessionBox').classList.remove('hidden');
+            document.getElementById('loggedInEmailLabel').innerText = `👤 ${currentUserEmail}`;
+
+            await fetchUserRecords();
+        });
+
+        function logout() {
+            currentUserEmail = "";
+            userRecords = {};
+            if (myChart) myChart.destroy();
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('userSessionBox').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('loginEmail').value = "";
+        }
+
+        async function fetchUserRecords() {
+            try {
+                const res = await fetch(`/api/get-expenses/${currentUserEmail}`);
+                const data = await res.json();
+                userRecords = data.records || {};
+                renderHistory();
+                renderChart();
+            } catch (err) {
+                console.error("Error fetching records:", err);
+            }
+        }
+
+        document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const month = document.getElementById('selectedMonth').value;
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const rent = parseFloat(document.getElementById('rent').value) || 0;
+            const food = parseFloat(document.getElementById('food').value) || 0;
+            const transport = parseFloat(document.getElementById('transport').value) || 0;
+
+            const totalExpenses = rent + food + transport;
+            const savings = salary - totalExpenses;
+
+            document.getElementById('totalExpense').innerText = `AED ${totalExpenses.toLocaleString()}`;
+            const savingsEl = document.getElementById('totalSavings');
+            savingsEl.innerText = `AED ${savings.toLocaleString()}`;
+
+            const payload = JSON.stringify({ salary, rent, food, transport, totalExpenses, savings, timestamp: new Date().toISOString() });
+            
+            userRecords[month] = btoa(payload);
+
+            try {
+                await fetch('/api/save-expense', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: currentUserEmail, month: month, encrypted_payload: userRecords[month] })
+                });
+                alert(`Successfully saved assessment for ${month}!`);
+                renderHistory();
+                renderChart();
+            } catch (err) {
+                console.error("Error saving data:", err);
+            }
+        });
+
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = "";
+
+            const months = Object.keys(userRecords);
+            if (months.length === 0) {
+                historyList.innerHTML = `<p class="text-xs text-slate-500 italic">No records stored yet.</p>`;
+                return;
+            }
+
+            months.forEach(m => {
+                try {
+                    const decrypted = JSON.parse(atob(userRecords[m]));
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2";
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold text-emerald-400">${m}</span>
+                            <span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded">Secured</span>
+                        </div>
+                        <div class="text-xs text-slate-300 space-y-1">
+                            <div class="flex justify-between"><span>Salary:</span> <span class="font-semibold text-white">AED ${decrypted.salary}</span></div>
+                            <div class="flex justify-between"><span>Expenses:</span> <span class="font-semibold text-rose-400">AED ${decrypted.totalExpenses}</span></div>
+                            <div class="flex justify-between"><span>Savings:</span> <span class="font-semibold text-emerald-400">AED ${decrypted.savings}</span></div>
+                        </div>
+                    `;
+                    historyList.appendChild(card);
+                } catch (err) {
+                    console.error("Error parsing history record", err);
+                }
+            });
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            
+            const months = Object.keys(userRecords);
+            const expensesData = [];
+            const savingsData = [];
+
+            months.forEach(m => {
+                try {
+                    const decrypted = JSON.parse(atob(userRecords[m]));
+                    expensesData.push(decrypted.totalExpenses);
+                    savingsData.push(decrypted.savings);
+                } catch (err) {
+                    expensesData.push(0);
+                    savingsData.push(0);
+                }
+            });
+
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Expenses (AED)',
+                            data: expensesData,
+                            backgroundColor: 'rgba(244, 63, 94, 0.7)',
+                            borderColor: 'rgba(244, 63, 94, 1)',
+                            borderWidth: 1,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Savings (AED)',
+                            data: savingsData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
